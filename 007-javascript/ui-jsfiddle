@@ -1,0 +1,108 @@
+// html
+<canvas id="game" width="300" height="300" style="border: 1px solid black">
+</canvas>
+
+// javascript
+function main() {
+    var canvas = document.getElementById("game");
+    console.log('---------------');
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#FFF";
+    ctx.fillRect(0,0,300,300);
+    
+    var scale = 5;
+    var position = [(300 / 2) / scale, (300 / 2) / scale];
+    var direction = 'north';
+    
+    var i = 1000;
+    var interval;
+        
+    var loop = function () {
+        var x = 1;
+        while (x--) {
+        var pix = ctx.getImageData(position[0]*scale, position[1]*scale, 1, 1).data;
+        var color = pix[1] == 255 ? 'white' : 'black';
+        console.log(pix);
+        
+        var state = calculateNewState(position, direction, color);
+        ctx.fillStyle = state[2] == 'white' ? '#FFF' : '#000';
+        ctx.fillRect(position[0]*scale,position[1]*scale,scale,scale);
+        position = state[0];
+        direction = state[1];
+        }
+        if (!i--) {
+            clearInterval(interval);
+        }
+    }
+    
+    interval = setInterval(loop, 100);
+}
+
+main();
+
+function calculateNewState(position, direction, color) {
+  var newColor = flipColor(color);
+  var newDirection = resolveAntDirection(direction, color);
+  var newPosition = moveAnt(position, newDirection);
+  
+  return [newPosition, newDirection, newColor];
+}
+
+function anyAntPosition() {
+  return [0, 0];
+}
+
+function anyAntDirection() {
+  return 'north';
+}
+
+function flipColor(color) {
+  return color == 'black' ? 'white' : 'black';
+}
+
+function moveAnt(position, direction) {
+  var delta = getDirectionDelta(direction);
+  return addPositions(position, delta);
+}
+
+// The production source code.
+function resolveAntDirection(direction, color) {
+  if (color == 'white') {
+    return turnRight(direction);
+  } else {
+    return turnLeft(direction);
+  }
+}
+
+function addPositions(positionA, positionB) {
+  return [ positionA[0] + positionB[0], positionA[1] + positionB[1] ];
+}
+
+function getDirectionDelta(direction) {
+  if (direction == 'west') {
+    return [-1, 0];
+  }
+  if (direction == 'east') {
+    return [1, 0];
+  }
+  if (direction == 'south') {
+    return [0, -1];
+  }
+  return [0, 1];
+}
+
+function turnRight(direction)
+{
+  switch(direction)
+  {
+    case "north": return "east";
+    case "east": return "south";
+    case "south": return "west";
+    case "west": return "north";
+  }
+}
+
+function turnLeft(direction)
+{
+  return turnRight(turnRight(turnRight(direction)));
+}
