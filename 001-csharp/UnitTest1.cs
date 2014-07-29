@@ -42,8 +42,7 @@ namespace StringCalculator
         private const string SumOfTwoPositiveStringNumbers = "1,2";
         private const int SumOfTwoPositiveStringNumbersSum = 3;
  
-        private const string TwoPositiveStringNumbersWithNlSeparator = "1
-2,3";
+        private const string TwoPositiveStringNumbersWithNlSeparator = "12,3";
         private const int SumOfTwoPositiveStringNumbersWithNlSeparator = 6;
  
         private const string InputWithNegativeNumber = "1,-2, -3";
@@ -54,8 +53,7 @@ namespace StringCalculator
         public int Calculate(String input)
         {
  
-            string[] list = input.Split(new[] {',','
-'}, StringSplitOptions.RemoveEmptyEntries);
+            string[] list = input.Split(new[] {',',' '}, StringSplitOptions.RemoveEmptyEntries);
             var numbers = list.Select(int.Parse).ToList();
  
             var seed = numbers.Aggregate(
